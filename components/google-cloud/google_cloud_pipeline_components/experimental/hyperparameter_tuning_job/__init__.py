@@ -15,7 +15,7 @@
 
 import os
 
-from .utils import serialize_parameters, serialize_metrics, GetTrialsOp, GetBestTrialOp, GetBestHyperparametersOp, GetHyperparametersOp, GetWorkerPoolSpecsOp, IsMetricBeyondThresholdOp
+from .utils import serialize_parameters, serialize_metrics, GetBestHyperparametersOp, GetHyperparametersOp, GetWorkerPoolSpecsOp, IsMetricBeyondThresholdOp
 try:
   from kfp.v2.components import load_component_from_file
 except ImportError:
@@ -37,3 +37,8 @@ __all__ = [
 HyperparameterTuningJobRunOp = load_component_from_file(
     os.path.join(os.path.dirname(__file__), 'component.yaml'))
 
+GetTrialsOp = load_component_from_file(
+    os.path.join(os.path.dirname(__file__), 'get_trials', 'component.yaml'))
+
+GetBestTrialOp = load_component_from_file(
+    os.path.join(os.path.dirname(__file__), 'get_best_trial', 'component.yaml'))

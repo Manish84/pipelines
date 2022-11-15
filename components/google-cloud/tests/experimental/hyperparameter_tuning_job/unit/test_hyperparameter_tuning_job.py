@@ -19,7 +19,9 @@ from unittest import mock
 from google.cloud import aiplatform
 from google.cloud.aiplatform import hyperparameter_tuning as hpt
 from google.cloud.aiplatform_v1.types import hyperparameter_tuning_job, study
-from google_cloud_pipeline_components.experimental.hyperparameter_tuning_job import GetBestHyperparametersOp, GetBestTrialOp, GetHyperparametersOp, GetTrialsOp, GetWorkerPoolSpecsOp, IsMetricBeyondThresholdOp, serialize_metrics, serialize_parameters
+from google_cloud_pipeline_components.experimental.hyperparameter_tuning_job import GetBestHyperparametersOp, GetHyperparametersOp, GetWorkerPoolSpecsOp, IsMetricBeyondThresholdOp, serialize_metrics, serialize_parameters
+from google_cloud_pipeline_components.experimental.hyperparameter_tuning_job.get_trials.component import get_trials
+from google_cloud_pipeline_components.experimental.hyperparameter_tuning_job.get_best_trial.component import get_best_trial
 
 import unittest
 
@@ -221,7 +223,7 @@ class HyperparameterTuningJobTest(unittest.TestCase):
                     for trial in self._trials_max]))
     expected_output = [json.loads(trial) for trial in self._trials_max]
 
-    output_trials = GetTrialsOp.python_func(gcp_resources=self._gcp_resources)
+    output_trials = get_trials(gcp_resources=self._gcp_resources)
     output = [json.loads(trial) for trial in output_trials]
 
     mock_job_service_client.assert_called_once_with(client_options={
@@ -235,7 +237,7 @@ class HyperparameterTuningJobTest(unittest.TestCase):
   def test_get_best_trial_op_max(self):
     expected_output = self._best_trial_max
 
-    output = GetBestTrialOp.python_func(
+    output = get_best_trial(
         trials=self._trials_max, study_spec_metrics=self._metrics_spec_max)
 
     self.assertEqual(json.loads(output), json.loads(expected_output))
@@ -252,7 +254,7 @@ class HyperparameterTuningJobTest(unittest.TestCase):
   def test_get_best_trial_op_min(self):
     expected_output = self._best_trial_min
 
-    output = GetBestTrialOp.python_func(
+    output = get_best_trial(
         trials=self._trials_min, study_spec_metrics=self._metrics_spec_min)
 
     self.assertEqual(json.loads(output), json.loads(expected_output))
